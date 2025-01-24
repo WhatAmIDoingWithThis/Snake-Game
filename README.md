@@ -1,6 +1,10 @@
 # Snake Game
-
 The classic snake game, implemented using C++ in the console
+
+# How to Install
+1. Download the repo to your local machine
+2. Open the .sln folder with Visual Studio
+3. Click Build
 
 # Version History
 ## Version 0.1 (Current)
