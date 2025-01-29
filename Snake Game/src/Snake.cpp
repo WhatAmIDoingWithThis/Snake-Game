@@ -1,5 +1,6 @@
 #include "Snake.h"
 
+//Creates a new snake object with a single body piece at the specified location
 Snake::Snake(int x, int y)
 {
 	length = 1;
@@ -9,11 +10,12 @@ Snake::Snake(int x, int y)
 	bodyPieces.push_back(temp);
 }
 
-void Snake::move(int x, int y)
+//Moves the snake in the specified direction
+void Snake::move(int x, int y, bool appleEaten)
 {
-	bod temp;
+	bod temp = { bodyPieces.front().x, bodyPieces.front().y };
 	temp.x = x;
 	temp.y = y;
 	bodyPieces.push_front(temp);
-	bodyPieces.pop_back();
+	if(!appleEaten) bodyPieces.pop_back();
 }

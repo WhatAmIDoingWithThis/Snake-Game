@@ -2,6 +2,7 @@
 #include <conio.h>
 #include <chrono>
 #include <Windows.h>
+#include <thread>
 
 #include "GameBoard.h"
 
@@ -12,9 +13,13 @@ using namespace std::chrono;
 int makeFrame(GameBoard*);
 int kill();
 void calculateSleep(duration<double>);
+void listenForInput(GameBoard*);
 
 //Static Variables
-static int MovesPerSecond = 10;
+static int MovesPerSecond = 3;
+
+//Thread check
+bool running = true;
 
 int main() {
 	//Welcome Message
@@ -23,7 +28,10 @@ int main() {
 	_getch();
 
 	//Generate a new GameBoard object
-	GameBoard* board = new GameBoard(10);
+	GameBoard* board = new GameBoard();
+
+	//Create movement thread
+	thread inputThread(listenForInput, board);
 
 	//Game Loop
 	int i = 0;
@@ -32,7 +40,11 @@ int main() {
 
 		switch (makeFrame(board)) {
 		case -1:
-			return kill();
+			//tell input thread to stop
+			running = false;
+			int ret = kill();
+			inputThread.join();
+			return ret;
 		}
 
 		auto end = high_resolution_clock::now();
@@ -66,5 +78,30 @@ int kill() {
 void calculateSleep(duration<double> dur) {
 	if (dur.count() < 1000 / MovesPerSecond) {
 		Sleep(1000 / MovesPerSecond - dur.count());
+	}
+}
+
+//Function that listens for input, meant to be run in a separate thread
+void listenForInput(GameBoard* board) {
+	while (running) {
+		int dir = _getch();
+		switch (dir) {
+		case 72:
+		case (int)'w':
+			board->setDirection(1);
+			break;
+		case 77:
+		case (int)'d':
+			board->setDirection(2);
+			break;
+		case 80:
+		case (int)'s':
+			board->setDirection(3);
+			break;
+		case 75:
+		case (int)'a':
+			board->setDirection(4);
+			break;
+		}
 	}
 }

@@ -9,7 +9,7 @@ public:
 		int y;
 	};
 	Snake(int, int);
-	void move(int, int);
+	void move(int, int, bool = false);
 	std::list<bod> bodyPieces;
 	int length;
 };

@@ -10,12 +10,13 @@ class GameBoard
 public:
 
 	//Constructors
-	GameBoard(int);
+	GameBoard(int = 10);
 	GameBoard(int, int);
 
 	//Variables
 	int height;
 	int width;
+	void setDirection(int);
 
 	//Board Access
 	int computeBoard();
@@ -24,6 +25,7 @@ public:
 private:
 
 	//Variables
+	int direction;
 	int** board;
 	Snake* snake;
 	Apple* apple;

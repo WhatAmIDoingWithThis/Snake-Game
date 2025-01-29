@@ -12,11 +12,13 @@ static char VerticalChar = '|';
 static char HorizontalChar = '-';
 static char CornerOneChar = '/';
 static char CornerTwoChar = '\\';
+static char Error = 'E';
 
 //Default Constructor, sets for a square board
-GameBoard::GameBoard(int size = 10) {
+GameBoard::GameBoard(int size) {
 	width = size;
 	height = size;
+	direction = 1;
 	
 	//Allocate memory for the board
 	board = new int*[size + 2];
@@ -36,6 +38,7 @@ GameBoard::GameBoard(int size = 10) {
 GameBoard::GameBoard(int w, int h) {
 	width = w;
 	height = h;
+	direction = 1;
 	
 	//Allocate memory for the board
 	board = new int*[w + 2];
@@ -49,6 +52,11 @@ GameBoard::GameBoard(int w, int h) {
 
 	//Generate a new Apple object
 	apple = new Apple(w, h);
+};
+
+//This method sets the direction of the snake
+void GameBoard::setDirection(int dir) {
+	direction = dir;
 };
 
 //This method initializes the board. Basically sets the boundaries, and the middle to 0
@@ -94,6 +102,9 @@ void GameBoard::displayBoard() {
 			case 7:
 				cout << CornerTwoChar;
 				break;
+			default:
+				cout << Error;
+				break;
 			}
 		}
 		cout << endl;
@@ -105,18 +116,112 @@ int GameBoard::computeBoard() {
 	//Clear the board
 	initBoard(board, width, height);
 
-	//Set the snake on the board
-	for (const Snake::bod& temp : snake->bodyPieces) {
-		if (board[temp.x][temp.y] != 0) {
-			return -1;
-		}
-		board[temp.x][temp.y] = 2;
+	//Move the snake
+	//1 = up, 2 = right, 3 = down, 4 = left
+	int xHead = snake->bodyPieces.front().x;
+	int yHead = snake->bodyPieces.front().y;
+	bool appleEaten = false;
+	if(xHead == apple->x && yHead == apple->y) {
+		appleEaten = true;
+		apple->generatePosition(width, height);
 	};
+	//Screwed up some code somewhere that determines x and y, but I'm just going to code around it here
+	switch (direction) {
+	case 1:
+		snake->move(xHead - 1, yHead, appleEaten);
+		break;
+	case 2:
+		snake->move(xHead, yHead + 1, appleEaten);
+		break;
+	case 3:
+		snake->move(xHead + 1, yHead, appleEaten);
+		break;
+	case 4:
+		snake->move(xHead, yHead - 1, appleEaten);
+		break;
+	}
 
 	//Set the apple on the board
 	board[apple->x][apple->y] = 3;
 	if(board[apple->x][apple->y] == 2) {
 		return 1;
+	};
+
+	//Set the snake on the board
+	bool head = true;
+	int prevX, prevY, nextX, nextY;
+	for (auto currentBod = snake->bodyPieces.begin(); currentBod != snake->bodyPieces.end(); currentBod++) {
+		//Check if the snake is out of bounds
+		if(board[currentBod->x][currentBod->y] != 0 && board[currentBod->x][currentBod->y] != 3) {
+			return -1;
+		}
+		//Draw head
+		if(head) {
+			head = false;
+			board[currentBod->x][currentBod->y] = 2;
+		}
+		//Draw body
+		else {
+			//Get next
+			auto nextBod = next(currentBod);
+			if(nextBod == snake->bodyPieces.end()) {
+				nextX = -1;
+				nextY = -1;
+			}
+			else {
+				nextX = nextBod->x;
+				nextY = nextBod->y;
+			}
+
+			//Check direction of previous segment
+			int prevDir;
+			if (prevX > currentBod->x) prevDir = 3;			//Down
+			else if (prevX < currentBod->x) prevDir = 1;	//Up
+			else if (prevY > currentBod->y) prevDir = 2;	//Right
+			else prevDir = 4;								//Left
+
+			//Check direction of next segment
+			int nextDir = 0;
+			if (nextX != -1) {
+				if (nextX > currentBod->x) nextDir = 3;		//Down
+				else if (nextX < currentBod->x) nextDir = 1;//Up
+				else if (nextY > currentBod->y) nextDir = 2;//Right
+				else nextDir = 4;							//Left
+			}
+
+			//Vertical Body Segment
+			if ((prevDir == 1 || prevDir == 3) && (nextDir == 1 || nextDir == 3 || nextDir == 0)) {
+				board[currentBod->x][currentBod->y] = 4;
+			}
+			//Horizontal Body Segment
+			else if ((prevDir == 2 || prevDir == 4) && (nextDir == 2 || nextDir == 4 || nextDir == 0)) {
+				board[currentBod->x][currentBod->y] = 5;
+			}
+			//Moving right->up or down->left
+			else if (
+				(prevDir == 2 && nextDir == 3) || 
+				(prevDir == 4 && nextDir == 1) ||
+				(prevDir == 3 && nextDir == 2) ||
+				(prevDir == 1 && nextDir == 4)
+				) {
+				board[currentBod->x][currentBod->y] = 6;
+			}
+			//Moving right->down or up->left
+			else if (
+				(prevDir == 3 && nextDir == 4) ||
+				(prevDir == 1 && nextDir == 2) ||
+				(prevDir == 2 && nextDir == 1) ||
+				(prevDir == 4 && nextDir == 3)
+				) {
+				board[currentBod->x][currentBod->y] = 7;
+			}
+			else {
+				board[currentBod->x][currentBod->y] = -1;
+				cout << "Error: " << prevDir << " " << nextDir << endl;
+			}
+		}
+		prevX = currentBod->x;
+		prevY = currentBod->y;
 	};
 
 	return 0;

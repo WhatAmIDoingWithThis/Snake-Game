@@ -8,6 +8,6 @@ Apple::Apple(int width, int height)
 
 void Apple::generatePosition(int width, int height)
 {
-	x = rand() % width;
-	y = rand() % height;
+	x = rand() % width + 1;
+	y = rand() % height + 1;
 }
