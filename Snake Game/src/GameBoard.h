@@ -13,6 +13,9 @@ public:
 	GameBoard(int = 10);
 	GameBoard(int, int);
 
+	//Destructor
+	~GameBoard();
+
 	//Variables
 	int height;
 	int width;

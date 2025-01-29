@@ -3,6 +3,7 @@
 #include <chrono>
 #include <Windows.h>
 #include <thread>
+#include <iomanip>
 
 #include "GameBoard.h"
 
@@ -16,19 +17,63 @@ void calculateSleep(duration<double>);
 void listenForInput(GameBoard*);
 
 //Static Variables
-static int MovesPerSecond = 3;
+int MovesPerSecond = 3;
 
 //Thread check
 bool running = true;
 
 int main() {
+	//Beginning values
+	int w = 10, h = 10;
+	MovesPerSecond = 3;
+
 	//Welcome Message
+MainMenu:
+	system("cls");
 	cout << "SNAKE GAME!" << endl;
-	cout << "Press any key to start..." << endl;
-	_getch();
+	cout << "Press any key to start...  ... or 's' for settings" << endl;
+	if (_getch() == 's') {
+	Options:
+		system("cls");
+		cout << left;
+		cout << setw(10) << "Option"
+			<< "|" << setw(20) << "Description"
+			<< "|" << setw(15) << "Current Value" << endl;
+		cout << string(45, '-') << endl;
+		cout << setw(10) << "1"
+			<< "|" << setw(20) << "Moves Per Second"
+			<< "|" << setw(15) << MovesPerSecond << endl;
+		cout << setw(10) << "2"
+			<< "|" << setw(20) << "Board Width"
+			<< "|" << setw(15) << w << endl;
+		cout << setw(10) << "3"
+			<< "|" << setw(20) << "Board Height"
+			<< "|" << setw(15) << h << endl;
+		cout << string(45, '-') << endl;
+		cout << endl;
+		cout << "Enter the number of the option you would like to change" << endl;
+		cout << "Press 'q' to go back to the main menu" << endl;
+		switch (_getch()) {
+		case '1':
+			cout << "Moves Per Second: ";
+			cin >> MovesPerSecond;
+			break;
+		case '2':
+			cout << "Board Width: ";
+			cin >> w;
+			break;
+		case '3':
+			cout << "Board Height: ";
+			cin >> h;
+			break;
+		case 'q':
+			goto MainMenu;
+		}
+		goto Options;
+	}
 
 	//Generate a new GameBoard object
-	GameBoard* board = new GameBoard();
+	GameBoard* board = new GameBoard(w, h);
 
 	//Create movement thread
 	thread inputThread(listenForInput, board);
@@ -44,7 +89,8 @@ int main() {
 			running = false;
 			int ret = kill();
 			inputThread.join();
-			return ret;
+			delete board;
+			goto MainMenu;
 		}
 
 		auto end = high_resolution_clock::now();
@@ -71,6 +117,8 @@ int makeFrame(GameBoard* board) {
 int kill() {
 	system("cls");
 	cout << "You died!" << endl;
+	cout << "Press any key to return to the main menu" << endl;
+	_getch();
 	return 0;
 }
 

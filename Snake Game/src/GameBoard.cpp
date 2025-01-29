@@ -54,6 +54,14 @@ GameBoard::GameBoard(int w, int h) {
 	apple = new Apple(w, h);
 };
 
+//Destructor
+GameBoard::~GameBoard() {
+	for (int i = 0; i < width + 2; i++) {
+		delete[] board[i];
+	};
+	delete[] board;
+};
+
 //This method sets the direction of the snake
 void GameBoard::setDirection(int dir) {
 	direction = dir;
