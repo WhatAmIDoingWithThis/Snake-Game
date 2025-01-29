@@ -2,6 +2,10 @@
 The classic snake game, implemented using C++ in the console
 
 # How to Install
+## Runnable Executable
+1. Download the .exe from the releases
+2. Run the .exe
+## Build From Source Code
 1. Download the repo to your local machine
 2. Open the .sln folder with Visual Studio
 3. Click Build
