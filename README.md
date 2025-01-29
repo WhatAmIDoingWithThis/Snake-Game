@@ -9,7 +9,16 @@ The classic snake game, implemented using C++ in the console
 Note: This project makes use of a number of Windows only commands, so it only runs on windows. I could fix it to run on Linux/Unix as well, but without a device to test it, I don't think it would be worth it
 
 # Version History
-## Version 0.2 (latest)
+## Version 0.3
+### Added Features
+- Finally added movement back in (Remember that from ver 0.1?)
+- Movement is way better now. Instead of constantly checking if you were pressing direction keys, it now listens for keyboard presses.
+- Body parts all follow (Hah, version 0.1 didn't do that!)
+- Implemented corners for body parts, so they aren't just vertical and horizontal
+- You can eat apples to grow
+### Known Issues
+- I haven't fixed the one game per run issue yet. I kinda forgot about it.
+## Version 0.2
 ### Added Features
 - Refactored a majority of the code
 - Seperated classes into their own files to make code cleaner
