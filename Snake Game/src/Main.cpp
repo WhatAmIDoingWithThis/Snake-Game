@@ -23,6 +23,13 @@ int MovesPerSecond = 3;
 bool running = true;
 
 int main() {
+	//Remove cursor
+	CONSOLE_CURSOR_INFO cursorInfo;
+	HANDLE console = GetStdHandle(STD_OUTPUT_HANDLE);
+	GetConsoleCursorInfo(console, &cursorInfo);
+	cursorInfo.bVisible = false;
+	SetConsoleCursorInfo(console, &cursorInfo);
+
 	//Beginning values
 	int w = 10, h = 10;
 	MovesPerSecond = 3;
@@ -72,8 +79,10 @@ MainMenu:
 		goto Options;
 	}
 
+	system("cls");
+
 	//Generate a new GameBoard object
-	GameBoard* board = new GameBoard(w, h);
+	GameBoard* board = new GameBoard(w, h, console);
 
 	//Create movement thread
 	thread inputThread(listenForInput, board);
@@ -95,6 +104,7 @@ MainMenu:
 
 		auto end = high_resolution_clock::now();
 		auto dur = duration_cast<milliseconds>(end - beg);
+		cout << dur.count() << endl;  //Before change: ~13	//After Change: ~
 		calculateSleep(dur);
 	}
 
@@ -107,7 +117,8 @@ MainMenu:
 
 //Function that generates and displays each frame
 int makeFrame(GameBoard* board) {
-	system("cls");
+	//system("cls");
+	SetConsoleCursorPosition(board->hConsole, { 0, 0 });
 	int temp = board->computeBoard();
 	board->displayBoard();
 	return temp;

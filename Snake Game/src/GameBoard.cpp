@@ -15,10 +15,11 @@ static char CornerTwoChar = '\\';
 static char Error = 'E';
 
 //Default Constructor, sets for a square board
-GameBoard::GameBoard(int size) {
+GameBoard::GameBoard(int size, HANDLE console) {
 	width = size;
 	height = size;
 	direction = 1;
+	hConsole = console;
 	
 	//Allocate memory for the board
 	board = new int*[size + 2];
@@ -35,10 +36,11 @@ GameBoard::GameBoard(int size) {
 };
 
 //Constructor for a board of custom sizing
-GameBoard::GameBoard(int w, int h) {
+GameBoard::GameBoard(int w, int h, HANDLE console) {
 	width = w;
 	height = h;
 	direction = 1;
+	hConsole = console;
 	
 	//Allocate memory for the board
 	board = new int*[w + 2];
@@ -87,30 +89,47 @@ void GameBoard::displayBoard() {
 		for (int curY = 0; curY < height + 2; curY++) {
 			switch (board[curX][curY]) {
 			case 0:
+				//No color change needed
 				cout << EmptyChar;
 				break;
 			case 1:
+				//Set color white
+				SetConsoleTextAttribute(hConsole, 0x0F);
 				cout << WallChar;
 				break;
 			case 2:
+				//Set color green
+				SetConsoleTextAttribute(hConsole, 0x0A);
 				cout << SnakeChar;
 				break;
 			case 3:
+				//Set color red
+				SetConsoleTextAttribute(hConsole, 0x0C);
 				cout << AppleChar;
 				break;
 			case 4:
+				//Set color green
+				SetConsoleTextAttribute(hConsole, 0x0A);
 				cout << VerticalChar;
 				break;
 			case 5:
+				//Set color green
+				SetConsoleTextAttribute(hConsole, 0x0A);
 				cout << HorizontalChar;
 				break;
 			case 6:
+				//Set color green
+				SetConsoleTextAttribute(hConsole, 0x0A);
 				cout << CornerOneChar;
 				break;
 			case 7:
+				//Set color green
+				SetConsoleTextAttribute(hConsole, 0x0A);
 				cout << CornerTwoChar;
 				break;
 			default:
+				//Set color blue
+				SetConsoleTextAttribute(hConsole, 0x09);
 				cout << Error;
 				break;
 			}

@@ -2,10 +2,12 @@
 The classic snake game, implemented using C++ in the console
 
 # How to Install
-## Runnable Executable
+## Runnable Executable (Recommended)
+This way is the most painless way to test the code. No effort on your part, but not necessarily the latest release.
 1. Download the .exe from the releases
 2. Run the .exe
-## Build From Source Code
+## Build From Source Code (Latest)
+This requires that you have Visual Studio installed, but allows you to compile the latest code directly, meaning you're not waiting for releases.
 1. Download the repo to your local machine
 2. Open the .sln folder with Visual Studio
 3. Click Build
@@ -14,7 +16,16 @@ Note: This project makes use of a number of Windows only commands, so it only ru
 
 # Version History
 
-## Version 1.0 (Current)
+## Version 1.1 (Current)
+Added color now. Also sped up frame generation
+### Added Features
+- Color! Snake is green, apples are red. Pretty basic stuff
+- 300% frame generation speed. Turns out clearing the screen between frames is very inefficient. So now I just draw over the previous
+### Known Issues
+- Still have the double keypress for game over
+- Apparantly a bug from 1.0, but sometimes restarting the game doesn't restart the input listener thread, meaning you have no controls. Need to look into why this is happening.
+
+## Version 1.0 (Release)
 Full feature completion. This does not mean end of development. I still have plans for adding some more stuff, but I feel at this point it is enough to call the game complete
 ### Added Features
 - You can replay the game when you die

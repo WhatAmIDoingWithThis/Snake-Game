@@ -1,6 +1,7 @@
 #pragma once
 
 #include <list>
+#include <Windows.h>
 #include "Snake.h"
 #include "Apple.h"
 
@@ -10,8 +11,8 @@ class GameBoard
 public:
 
 	//Constructors
-	GameBoard(int = 10);
-	GameBoard(int, int);
+	GameBoard(int = 10, HANDLE = NULL);
+	GameBoard(int, int, HANDLE);
 
 	//Destructor
 	~GameBoard();
@@ -20,6 +21,7 @@ public:
 	int height;
 	int width;
 	void setDirection(int);
+	HANDLE hConsole;
 
 	//Board Access
 	int computeBoard();
